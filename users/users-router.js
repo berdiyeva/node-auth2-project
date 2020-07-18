@@ -6,9 +6,26 @@ const restrict = require("../middleware/restrict");
 
 const router = express.Router();
 
+router.get("/users/:id", restrict("normal"), async (req, res, next) => {
+	try {
+		res.json(await Users.getById(req.params.id));
+	} catch (err) {
+		next(err);
+	}
+});
+
 router.get("/users", restrict("normal"), async (req, res, next) => {
 	try {
 		res.json(await Users.get());
+	} catch (err) {
+		next(err);
+	}
+});
+
+router.get("/users/:dep", async (req, res, next) => {
+	const dep = req.params.dep;
+	try {
+		res.json(await Users.getByDep(dep));
 	} catch (err) {
 		next(err);
 	}
@@ -31,6 +48,7 @@ router.post("/users", async (req, res, next) => {
 			department,
 		});
 
+	
 		res.status(201).json(newUser);
 	} catch (err) {
 		next(err);
@@ -65,23 +83,13 @@ router.post("/login", async (req, res, next) => {
 		};
 
 		//add a cookie
-		res.cookie("token", jwt.sign(payload, process.env.JWT_SECRET));
-		res.json({
-			message: `Welcome ${user.username}`,
-		});
-	} catch (err) {
-		next(err);
-	}
-});
+		// res.cookie("token", jwt.sign(payload, process.env.JWT_SECRET));
 
-router.get("/logout", async (req, res, next) => {
-	try {
-		req.session.destroy((err) => {
-			if (err) {
-				next(err);
-			} else {
-				res.status(204).end();
-			}
+		//take the token and keep it in local storage inside the .then(localStorage.setItem("token": res.data.token), post req
+		res.json({
+			userID: user.id,
+			message: `Welcome ${user.username}`,
+			token: jwt.sign(payload, process.env.JWT_SECRET),
 		});
 	} catch (err) {
 		next(err);

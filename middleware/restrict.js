@@ -10,7 +10,8 @@ function restrict(role) {
 
 		try {
 			//once we added cookies need to change the request address
-			const token = req.cookies.token;
+			// const token = req.cookies.token;
+			const token = req.headers.token;
 
 			if (!token) {
 				return res.status(401).json(authError);

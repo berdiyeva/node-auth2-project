@@ -14,7 +14,11 @@ function getBy(filter) {
 }
 
 function getById(id) {
-	return db("users").select("id", "username").where({ id }).first();
+	return db("users").select("id", "username", "department" ).where({ id }).first();
+}
+
+function getByDep(dep) {
+	return db("users").select("id", "username", "department" ).where("department", dep)
 }
 
 module.exports = {
@@ -22,4 +26,5 @@ module.exports = {
 	add,
 	getBy,
 	getById,
+	getByDep
 };
